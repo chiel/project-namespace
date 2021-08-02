@@ -39,3 +39,22 @@ resource "kubernetes_role_binding" "deployer_deployer" {
     namespace = kubernetes_namespace.this.metadata[0].name
   }
 }
+
+resource "kubernetes_secret" "ghcr_io" {
+  type = "kubernetes.io/dockerconfigjson"
+
+  metadata {
+    name      = "ghcr.io"
+    namespace = kubernetes_namespace.this.metadata[0].name
+  }
+
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      "auths" = {
+        "https://ghcr.io" = {
+          "auth" : base64encode("${var.ghcr_user}:${var.ghcr_token}")
+        }
+      }
+    })
+  }
+}
