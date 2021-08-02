@@ -6,10 +6,10 @@ Currently, it'll do the following:
 
 - Create namespace
 - Create a `deployer` service account
+- Create a role binding for the `deployer` account with the `deployer` cluster role (this is shared across namespaces since these permissions are currently always the same)
 
 
 ## To do
 
-- Create a role binding for the `deployer` account with the `deployer` cluster role (this is shared across namespaces since these permissions are currently always the same)
 - Add a docker pull secret to pull from `ghcr.io`
 - Add a default `NetworkPolicy` that blocks all ingress + egress.

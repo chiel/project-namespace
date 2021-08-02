@@ -1,3 +1,9 @@
+variable "deployer_role" {
+  type        = string
+  description = "Name of the deployer cluster role."
+  default     = "deployer"
+}
+
 variable "name" {
   type        = string
   description = "The machine-readable name of the project."
