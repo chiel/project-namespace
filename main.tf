@@ -9,6 +9,18 @@ resource "kubernetes_namespace" "this" {
   }
 }
 
+resource "kubernetes_network_policy" "default_deny_all" {
+  metadata {
+    name      = "default-deny-all"
+    namespace = kubernetes_namespace.this.metadata[0].name
+  }
+
+  spec {
+    pod_selector {}
+    policy_types = ["Egress", "Ingress"]
+  }
+}
+
 resource "kubernetes_service_account" "deployer" {
   metadata {
     name      = "deployer"
