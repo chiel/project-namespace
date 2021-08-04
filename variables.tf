@@ -24,3 +24,8 @@ variable "name" {
     error_message = "Name should consist of only lower-case letters, numbers, underscores and dashes."
   }
 }
+
+variable "kube_host" {
+  type        = string
+  description = "The hostname of the Kubernetes API."
+}
