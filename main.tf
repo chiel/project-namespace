@@ -9,15 +9,20 @@ resource "kubernetes_namespace" "this" {
   }
 }
 
-resource "kubernetes_network_policy" "default_deny_all" {
+resource "kubernetes_network_policy" "deny_all" {
   metadata {
-    name      = "default-deny-all"
+    name      = "deny-all"
     namespace = kubernetes_namespace.this.metadata[0].name
+
+    labels = {
+      "app.kubernetes.io/managed-by" : "terraform"
+      "app.kubernetes.io/name" : "deny-all"
+    }
   }
 
   spec {
-    pod_selector {}
     policy_types = ["Egress", "Ingress"]
+    pod_selector {}
   }
 }
 
