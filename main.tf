@@ -26,6 +26,44 @@ resource "kubernetes_network_policy" "deny_all" {
   }
 }
 
+resource "kubernetes_network_policy" "allow_cert_manager_solver" {
+  metadata {
+    name      = "allow-cert-manager-solver"
+    namespace = kubernetes_namespace.this.metadata[0].name
+
+    labels = {
+      "app.kubernetes.io/managed-by" : "terraform"
+      "app.kubernetes.io/name" : "allow-cert-manager-solver"
+    }
+  }
+
+  spec {
+    policy_types = ["Ingress"]
+
+    pod_selector {
+      match_labels = {
+        "acme.cert-manager.io/http01-solver" : "true"
+      }
+    }
+
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            "app.kubernetes.io/name" : "ingress"
+          }
+        }
+        pod_selector {
+          match_labels = {
+            "app.kubernetes.io/component" : "controller"
+            "app.kubernetes.io/name" : "ingress-nginx"
+          }
+        }
+      }
+    }
+  }
+}
+
 resource "kubernetes_service_account" "deployer" {
   metadata {
     name      = "deployer"
