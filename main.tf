@@ -78,6 +78,19 @@ resource "kubernetes_service_account" "deployer" {
   automount_service_account_token = false
 }
 
+resource "kubernetes_secret" "deployer" {
+  type = "kubernetes.io/service-account-token"
+
+  metadata {
+    name      = kubernetes_service_account.deployer.metadata[0].name
+    namespace = kubernetes_namespace.this.metadata[0].name
+
+    annotations = {
+      "kubernetes.io/service-account.name" = kubernetes_service_account.deployer.metadata[0].name
+    }
+  }
+}
+
 resource "kubernetes_role_binding" "deployer_deployer" {
   metadata {
     name      = "deployer-deployer"

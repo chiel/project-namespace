@@ -1,10 +1,3 @@
-data "kubernetes_secret" "deployer_credentials" {
-  metadata {
-    name      = kubernetes_service_account.deployer.default_secret_name
-    namespace = kubernetes_namespace.this.metadata[0].name
-  }
-}
-
 output "kubeconfig" {
   description = "Kubernetes configuration for the deployer service account, configured to deploy in the created namespace."
   value = yamlencode({
@@ -25,7 +18,7 @@ output "kubeconfig" {
       {
         "name" : "default",
         "cluster" : {
-          "certificate-authority-data" : base64encode(data.kubernetes_secret.deployer_credentials.data["ca.crt"]),
+          "certificate-authority-data" : base64encode(kubernetes_secret.deployer.data["ca.crt"]),
           "server" : var.kube_host,
         },
       },
@@ -34,7 +27,7 @@ output "kubeconfig" {
       {
         "name" : "default",
         "user" : {
-          "token" : data.kubernetes_secret.deployer_credentials.data.token,
+          "token" : kubernetes_secret.deployer.data.token,
         },
       },
     ],
